@@ -1,0 +1,410 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Design Tokens — Light Mode
+   ============================================================ */
+@layer base {
+  :root {
+    /* Core palette */
+    --background: 36 33% 97%;
+    --foreground: 28 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 28 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 28 20% 10%;
+
+    /* Warm gold accent */
+    --primary: 38 78% 52%;
+    --primary-foreground: 28 20% 5%;
+
+    --secondary: 36 25% 93%;
+    --secondary-foreground: 28 15% 20%;
+
+    --muted: 36 20% 93%;
+    --muted-foreground: 28 10% 48%;
+
+    --accent: 38 78% 52%;
+    --accent-foreground: 28 20% 5%;
+
+    --destructive: 0 80% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 36 18% 88%;
+    --input: 36 18% 88%;
+    --ring: 38 78% 52%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --surface-1: 36 25% 95%;
+    --surface-2: 36 20% 92%;
+    --glass: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.06);
+    --shadow-color: 28deg 20% 10%;
+  }
+
+  /* ============================================================
+     Design Tokens — Dark Mode
+     ============================================================ */
+  .dark {
+    --background: 234 18% 5%;
+    --foreground: 36 18% 92%;
+
+    --card: 234 16% 8%;
+    --card-foreground: 36 18% 92%;
+
+    --popover: 234 16% 8%;
+    --popover-foreground: 36 18% 92%;
+
+    /* Warm gold in dark — slightly brighter */
+    --primary: 38 72% 58%;
+    --primary-foreground: 234 18% 5%;
+
+    --secondary: 234 14% 14%;
+    --secondary-foreground: 36 15% 78%;
+
+    --muted: 234 14% 14%;
+    --muted-foreground: 36 10% 52%;
+
+    --accent: 38 72% 58%;
+    --accent-foreground: 234 18% 5%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 234 12% 16%;
+    --input: 234 12% 16%;
+    --ring: 38 72% 58%;
+
+    /* Custom tokens */
+    --surface-1: 234 15% 11%;
+    --surface-2: 234 14% 14%;
+    --glass: rgba(15, 15, 25, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --shadow-color: 234deg 18% 3%;
+  }
+}
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus ring */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-border;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
+  }
+
+  /* Selection */
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+    color: hsl(var(--foreground));
+  }
+}
+
+/* ============================================================
+   Utility Classes
+   ============================================================ */
+@layer utilities {
+  /* Glass morphism */
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid var(--glass-border);
+  }
+
+  .glass-dark {
+    background: rgba(8, 8, 16, 0.8);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  /* Scrapbook paper texture */
+  .paper {
+    background-image:
+      radial-gradient(circle at 1px 1px, hsl(var(--border)) 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(38 90% 72%) 100%
+    );
+  }
+
+  /* Cinematic overlay gradient */
+  .gradient-to-top {
+    background: linear-gradient(to top, hsl(var(--background)) 0%, transparent 60%);
+  }
+
+  .gradient-to-bottom {
+    background: linear-gradient(to bottom, hsl(var(--background)) 0%, transparent 60%);
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Depth shadows */
+  .shadow-depth {
+    box-shadow:
+      0 1px 2px hsl(var(--shadow-color) / 0.04),
+      0 4px 8px hsl(var(--shadow-color) / 0.06),
+      0 16px 32px hsl(var(--shadow-color) / 0.08);
+  }
+
+  .shadow-depth-lg {
+    box-shadow:
+      0 2px 4px hsl(var(--shadow-color) / 0.04),
+      0 8px 16px hsl(var(--shadow-color) / 0.08),
+      0 32px 64px hsl(var(--shadow-color) / 0.12);
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+
+  /* Hide scrollbar but allow scroll */
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Masonry grid */
+  .masonry {
+    columns: 2;
+    column-gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .masonry {
+      columns: 3;
+    }
+  }
+  @media (min-width: 1280px) {
+    .masonry {
+      columns: 4;
+    }
+  }
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+}
+
+/* ============================================================
+   Globe Pin Animations
+   ============================================================ */
+@layer components {
+  .memory-pin-container {
+    position: relative;
+    cursor: pointer;
+    transform-origin: center bottom;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .memory-pin-container:hover {
+    transform: scale(1.4) translateY(-2px);
+  }
+
+  .memory-pin-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 6px currentColor;
+  }
+
+  .memory-pin-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    transform: translate(-50%, -50%);
+    animation: pin-ring-pulse 2.5s ease-out infinite;
+    z-index: 1;
+    opacity: 0.7;
+  }
+
+  .memory-pin-ring-2 {
+    animation-delay: 1.25s;
+  }
+
+  @keyframes pin-ring-pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(3);
+      opacity: 0;
+    }
+  }
+
+  /* Cluster pin */
+  .cluster-pin {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255,255,255,0.2);
+    animation: cluster-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes cluster-pulse {
+    0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255,255,255,0.2); }
+    50% { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(255,255,255,0.15), 0 0 20px currentColor; }
+  }
+}
+
+/* ============================================================
+   Custom Animations
+   ============================================================ */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(0.5deg); }
+  66% { transform: translateY(-4px) rotate(-0.3deg); }
+}
+
+@keyframes globe-glow {
+  0%, 100% { box-shadow: 0 0 60px rgba(212, 160, 42, 0.1); }
+  50% { box-shadow: 0 0 100px rgba(212, 160, 42, 0.2); }
+}
+
+/* ============================================================
+   Page Transitions
+   ============================================================ */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ============================================================
+   Memory Card Styles
+   ============================================================ */
+.memory-card {
+  @apply relative overflow-hidden rounded-2xl;
+  transform-origin: center;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.memory-card:hover {
+  transform: translateY(-4px) rotate(0.3deg);
+}
+
+/* ============================================================
+   Scrapbook Layered Effect
+   ============================================================ */
+.scrapbook-layer {
+  position: relative;
+}
+
+.scrapbook-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: hsl(var(--card));
+  transform: rotate(-1.5deg) translateY(4px);
+  z-index: -1;
+  opacity: 0.6;
+}
+
+.scrapbook-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: hsl(var(--card));
+  transform: rotate(1deg) translateY(8px);
+  z-index: -2;
+  opacity: 0.35;
+}
+
+/* ============================================================
+   Typography
+   ============================================================ */
+.prose-memory {
+  @apply text-base leading-relaxed text-foreground/80;
+  max-width: 68ch;
+}
+
+.prose-memory p {
+  @apply mb-4;
+}
+
+.heading-display {
+  @apply font-display font-bold tracking-tight;
+  font-variation-settings: "opsz" 32;
+}

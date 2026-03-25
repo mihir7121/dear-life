@@ -1,0 +1,88 @@
+// Atlas of Me — Prisma Schema
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  name      String?
+  email     String?  @unique
+  avatar    String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memories Memory[]
+
+  @@map("users")
+}
+
+model Memory {
+  id           String      @id @default(cuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Core fields
+  title        String
+  description  String?     @db.Text
+  category     String      // concert | restaurant | cafe | travel | landmark | moment | milestone | nature | art | sports | other
+  date         DateTime
+  endDate      DateTime?
+
+  // Location
+  locationName String
+  latitude     Float
+  longitude    Float
+  address      String?
+  city         String?
+  country      String?
+
+  // Media
+  mediaItems   MediaItem[]
+  coverMediaId String?
+
+  // Metadata
+  tags         String[]    @default([])
+  mood         String?
+  colorTheme   String?     // hex color representing the memory's vibe
+  rating       Int?        // 1-5
+  favorite     Boolean     @default(false)
+  published    Boolean     @default(true)
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([userId, category])
+  @@index([userId, favorite])
+  @@index([date])
+  @@map("memories")
+}
+
+model MediaItem {
+  id           String   @id @default(cuid())
+  memoryId     String
+  memory       Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+
+  type         String   // image | video
+  url          String
+  thumbnailUrl String?
+  publicId     String?  // Cloudinary public ID for deletion/transforms
+  caption      String?
+  orderIndex   Int      @default(0)
+  width        Int?
+  height       Int?
+
+  createdAt    DateTime @default(now())
+
+  @@index([memoryId])
+  @@map("media_items")
+}
