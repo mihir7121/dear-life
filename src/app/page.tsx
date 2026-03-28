@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { ArrowRight, Globe2, MapPin, Sparkles, Play } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
@@ -46,6 +46,7 @@ const stagger = {
 };
 
 export default function MarketingPage() {
+  const { isSignedIn } = useAuth();
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
@@ -57,32 +58,33 @@ export default function MarketingPage() {
       <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4 glass border-b border-border/50">
         <div className="flex items-center gap-2">
           <Globe2 className="w-5 h-5 text-primary" />
-          <span className="font-display font-bold text-lg tracking-tight">Atlas of Me</span>
+          <span className="font-display font-bold text-lg tracking-tight">Dear Life</span>
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <SignedOut>
-            <Link
-              href="/sign-in"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-up"
-              className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity"
-            >
-              Get started
-            </Link>
-          </SignedOut>
-          <SignedIn>
+          {isSignedIn ? (
             <Link
               href="/dashboard"
               className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity flex items-center gap-1.5"
             >
               Open Atlas <ArrowRight className="w-3.5 h-3.5" />
             </Link>
-          </SignedIn>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/sign-up"
+                className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-full font-medium hover:opacity-90 transition-opacity"
+              >
+                Get started
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -169,23 +171,7 @@ export default function MarketingPage() {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
             className="flex flex-col sm:flex-row gap-4 items-center"
           >
-            <SignedOut>
-              <Link
-                href="/sign-up"
-                className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
-              >
-                Start your Atlas
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/sign-in"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-6 py-4 rounded-full border border-border hover:border-foreground/20"
-              >
-                <Play className="w-4 h-4" />
-                Sign in to your atlas
-              </Link>
-            </SignedOut>
-            <SignedIn>
+            {isSignedIn ? (
               <Link
                 href="/dashboard"
                 className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
@@ -193,7 +179,24 @@ export default function MarketingPage() {
                 Open your Atlas
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-            </SignedIn>
+            ) : (
+              <>
+                <Link
+                  href="/sign-up"
+                  className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
+                >
+                  Start your Atlas
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-6 py-4 rounded-full border border-border hover:border-foreground/20"
+                >
+                  <Play className="w-4 h-4" />
+                  Sign in to your atlas
+                </Link>
+              </>
+            )}
           </motion.div>
         </motion.div>
 
@@ -290,16 +293,7 @@ export default function MarketingPage() {
           <p className="text-muted-foreground mb-8 text-lg">
             Start for free. No credit card required.
           </p>
-          <SignedOut>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth"
-            >
-              Create your Atlas
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </SignedOut>
-          <SignedIn>
+          {isSignedIn ? (
             <Link
               href="/dashboard"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth"
@@ -307,7 +301,15 @@ export default function MarketingPage() {
               Back to my Atlas
               <ArrowRight className="w-4 h-4" />
             </Link>
-          </SignedIn>
+          ) : (
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth"
+            >
+              Create your Atlas
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          )}
         </motion.div>
       </section>
 
@@ -315,7 +317,7 @@ export default function MarketingPage() {
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
         <div className="flex items-center justify-center gap-2">
           <Globe2 className="w-4 h-4 text-primary" />
-          <span className="font-display font-semibold">Atlas of Me</span>
+          <span className="font-display font-semibold">Dear Life</span>
         </div>
         <p className="mt-2 text-xs">Your memories. Your world.</p>
       </footer>

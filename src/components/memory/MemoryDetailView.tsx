@@ -40,7 +40,11 @@ export function MemoryDetailView({ memory }: MemoryDetailViewProps) {
   const [deleting, setDeleting] = useState(false);
   const [favorited, setFavorited] = useState(memory.favorite);
 
-  const coverMedia = memory.mediaItems.find((m) => m.id === memory.coverMediaId) || memory.mediaItems[0];
+  const validMedia = memory.mediaItems.filter((m) => m.url && m.url.startsWith("http"));
+  const coverMedia =
+    validMedia.find((m) => m.id === memory.coverMediaId) ||
+    validMedia[0] ||
+    memory.mediaItems[0];
   const categoryMeta = getCategoryMeta(memory.category);
 
   const handleDelete = async () => {
@@ -80,11 +84,12 @@ export function MemoryDetailView({ memory }: MemoryDetailViewProps) {
           style={{ y: heroY, scale: heroScale }}
           className="absolute inset-0 origin-top"
         >
-          {coverMedia ? (
+          {coverMedia?.url?.startsWith("http") ? (
             <img
               src={coverMedia.url}
               alt={memory.title}
               className="w-full h-full object-cover"
+              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
             />
           ) : (
             <div
@@ -195,6 +200,93 @@ export function MemoryDetailView({ memory }: MemoryDetailViewProps) {
         </div>
       </div>
 
+      {/* ── PHOTO GRID (full width) ── */}
+      {memory.mediaItems.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.5 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 pt-8"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
+              {memory.mediaItems.length} {memory.mediaItems.length === 1 ? "photo" : "photos & videos"}
+            </h2>
+            <div className="flex-1 h-px bg-border" />
+          </div>
+
+          {/* Grid layout adapts to count */}
+          <div
+            className={cn(
+              "grid gap-2 sm:gap-3",
+              memory.mediaItems.length === 1 && "grid-cols-1 max-w-2xl",
+              memory.mediaItems.length === 2 && "grid-cols-2",
+              memory.mediaItems.length === 3 && "grid-cols-3",
+              memory.mediaItems.length >= 4 && "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4",
+            )}
+          >
+            {memory.mediaItems.map((item, index) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.04 * index, duration: 0.4 }}
+                className={cn(
+                  "relative cursor-pointer group overflow-hidden rounded-xl bg-muted",
+                  // First item spans 2 cols when there are 4+ items
+                  memory.mediaItems.length >= 4 && index === 0 && "col-span-2 row-span-2",
+                  "aspect-square",
+                )}
+                onClick={() => setLightboxIndex(index)}
+              >
+                {item.type === "video" ? (
+                  <>
+                    {item.thumbnailUrl ? (
+                      <img
+                        src={item.thumbnailUrl}
+                        alt={item.caption || `Video ${index + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <video
+                        src={item.url}
+                        className="w-full h-full object-cover"
+                        muted
+                        playsInline
+                        preload="metadata"
+                      />
+                    )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <img
+                    src={item.url}
+                    alt={item.caption || `Photo ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-300" />
+                {item.caption && (
+                  <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/70 to-transparent">
+                    <p className="text-white text-xs leading-snug">{item.caption}</p>
+                  </div>
+                )}
+                {/* Index badge on hover */}
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="text-xs bg-black/60 text-white px-1.5 py-0.5 rounded-md backdrop-blur-sm">
+                    {index + 1}/{memory.mediaItems.length}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       {/* ── CONTENT ── */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -213,61 +305,6 @@ export function MemoryDetailView({ memory }: MemoryDetailViewProps) {
                 <p className="prose-memory whitespace-pre-wrap font-serif text-lg leading-[1.8]">
                   {memory.description}
                 </p>
-              </motion.section>
-            )}
-
-            {/* Media gallery */}
-            {memory.mediaItems.length > 0 && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-4">
-                  {memory.mediaItems.length} {memory.mediaItems.length === 1 ? "photo" : "photos & videos"}
-                </h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
-                  {memory.mediaItems.map((item, index) => (
-                    <motion.div
-                      key={item.id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.05 * index, duration: 0.4 }}
-                      className={cn(
-                        "relative cursor-pointer group overflow-hidden rounded-xl",
-                        index === 0 ? "col-span-2 row-span-2 aspect-[4/3]" : "aspect-square",
-                      )}
-                      onClick={() => setLightboxIndex(index)}
-                    >
-                      {item.type === "video" ? (
-                        <div className="relative w-full h-full bg-black">
-                          <video
-                            src={item.url}
-                            className="w-full h-full object-cover opacity-80"
-                            muted
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
-                              <Play className="w-5 h-5 text-white fill-white" />
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <img
-                          src={item.url}
-                          alt={item.caption || `Photo ${index + 1}`}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-                      {item.caption && (
-                        <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform bg-gradient-to-t from-black/60 to-transparent">
-                          <p className="text-white text-xs">{item.caption}</p>
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
-                </div>
               </motion.section>
             )}
           </div>

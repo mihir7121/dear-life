@@ -73,7 +73,7 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 h-16 border-b border-border/50">
         <Globe2 className="w-5 h-5 text-primary flex-shrink-0" />
-        <span className="font-display font-bold text-base tracking-tight">Atlas of Me</span>
+        <span className="font-display font-bold text-base tracking-tight">Dear Life</span>
       </div>
 
       {/* Quick add */}
@@ -120,7 +120,7 @@ export function MobileHeader() {
       <header className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-14 border-b border-border glass">
         <div className="flex items-center gap-2">
           <Globe2 className="w-4.5 h-4.5 text-primary" />
-          <span className="font-display font-bold text-base tracking-tight">Atlas of Me</span>
+          <span className="font-display font-bold text-base tracking-tight">Dear Life</span>
         </div>
         <div className="flex items-center gap-2">
           <Link
@@ -159,7 +159,7 @@ export function MobileHeader() {
               <div className="flex items-center justify-between px-5 h-14 border-b border-border/50">
                 <div className="flex items-center gap-2">
                   <Globe2 className="w-5 h-5 text-primary" />
-                  <span className="font-display font-bold text-base">Atlas of Me</span>
+                  <span className="font-display font-bold text-base">Dear Life</span>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}

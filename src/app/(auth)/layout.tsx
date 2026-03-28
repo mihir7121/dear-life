@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <nav className="flex items-center justify-between px-6 py-4 border-b border-border/50">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Globe2 className="w-5 h-5 text-primary" />
-          <span className="font-display font-bold text-lg tracking-tight">Atlas of Me</span>
+          <span className="font-display font-bold text-lg tracking-tight">Dear Life</span>
         </Link>
         <ThemeToggle />
       </nav>

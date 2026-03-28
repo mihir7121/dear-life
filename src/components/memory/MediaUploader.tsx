@@ -41,22 +41,42 @@ export function MediaUploader({
   const [uploading, setUploading] = useState(false);
 
   const uploadFile = useCallback(async (file: File): Promise<UploadedMedia | null> => {
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("Upload failed");
+      // Get a signed upload params from our API (no file data sent to Next.js)
+      const sigRes = await fetch("/api/upload-signature", { method: "POST" });
+      if (!sigRes.ok) throw new Error("Failed to get upload signature");
+      const { signature, timestamp, folder, cloudName, apiKey } = await sigRes.json();
+
+      const isVideo = file.type.startsWith("video/");
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("signature", signature);
+      formData.append("timestamp", String(timestamp));
+      formData.append("folder", folder);
+      formData.append("api_key", apiKey);
+
+      // Upload directly to Cloudinary — bypasses Next.js body limit entirely
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/${isVideo ? "video" : "image"}/upload`,
+        { method: "POST", body: formData },
+      );
+      if (!res.ok) throw new Error("Cloudinary upload failed");
       const data = await res.json();
+
+      const thumbnailUrl = isVideo
+        ? `https://res.cloudinary.com/${cloudName}/video/upload/so_0,pg_1,w_400,h_300,c_fill,f_jpg/${data.public_id}.jpg`
+        : undefined;
+
       return {
         id: `uploaded-${Date.now()}-${Math.random()}`,
-        url: data.url,
-        thumbnailUrl: data.thumbnailUrl,
-        publicId: data.publicId,
-        type: data.type,
+        url: data.secure_url,
+        thumbnailUrl,
+        publicId: data.public_id,
+        type: isVideo ? "video" : "image",
         orderIndex: value.length,
       };
-    } catch {
+    } catch (err) {
+      console.error("Upload error:", err);
       return null;
     }
   }, [value.length]);
