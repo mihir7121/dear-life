@@ -1,5 +1,5 @@
 // ============================================================
-// Atlas of Me — Core Type Definitions
+// Dear Life — Core Type Definitions
 // ============================================================
 
 export type Category =

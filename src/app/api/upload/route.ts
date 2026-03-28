@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const result = await new Promise<any>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: `atlas-of-me/${userId}`,
+          folder: `dear-life/${userId}`,
           resource_type: isVideo ? "video" : "image",
           transformation: isVideo
             ? undefined

@@ -18,25 +18,25 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Atlas of Me",
-    template: "%s — Atlas of Me",
+    default: "Dear Life",
+    template: "%s — Dear Life",
   },
   description:
-    "A deeply personal digital scrapbook. Your memories, your places, your life — all in one beautiful universe.",
+    "Your life, remembered beautifully.",
   keywords: ["memories", "scrapbook", "travel", "personal", "journal", "globe"],
-  authors: [{ name: "Atlas of Me" }],
-  creator: "Atlas of Me",
+  authors: [{ name: "Dear Life" }],
+  creator: "Dear Life",
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "Atlas of Me",
-    description: "A deeply personal digital scrapbook.",
-    siteName: "Atlas of Me",
+    title: "Dear Life",
+    description: "Your life, remembered beautifully.",
+    siteName: "Dear Life",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Atlas of Me",
-    description: "A deeply personal digital scrapbook.",
+    title: "Dear Life",
+    description: "Your life, remembered beautifully.",
   },
 };
 

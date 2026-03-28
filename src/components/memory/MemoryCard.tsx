@@ -23,8 +23,11 @@ export function MemoryCard({
 }: MemoryCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const categoryMeta = getCategoryMeta(memory.category);
+  const validMedia = memory.mediaItems.filter((m) => m.url?.startsWith("http"));
   const coverMedia =
-    memory.mediaItems.find((m) => m.id === memory.coverMediaId) || memory.mediaItems[0];
+    validMedia.find((m) => m.id === memory.coverMediaId) ||
+    validMedia[0] ||
+    memory.mediaItems[0];
 
   if (variant === "gallery") {
     return (
@@ -36,7 +39,7 @@ export function MemoryCard({
       >
         <Link href={`/dashboard/memories/${memory.id}`} className="block group">
           <div className="relative overflow-hidden rounded-2xl bg-muted">
-            {coverMedia ? (
+            {coverMedia?.url?.startsWith("http") ? (
               <img
                 src={coverMedia.url}
                 alt={memory.title}
