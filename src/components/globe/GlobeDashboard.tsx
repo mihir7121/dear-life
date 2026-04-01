@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -8,7 +8,6 @@ import { Plus, Search, Globe2, Heart, MapPin, Layers } from "lucide-react";
 import type { Memory } from "@/types";
 import { GlobeComponent } from "./GlobeComponent";
 import { MemoryPreviewCard } from "./MemoryPreviewCard";
-import { MemoryCard } from "@/components/memory/MemoryCard";
 import { CATEGORIES } from "@/lib/categories";
 
 interface GlobeDashboardProps {
@@ -53,8 +52,6 @@ export function GlobeDashboard({ memories, stats }: GlobeDashboardProps) {
   const recentMemories = [...memories]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 6);
-
-  const favoriteMemories = memories.filter((m) => m.favorite).slice(0, 4);
 
   return (
     <div className="relative h-[calc(100vh-0px)] md:h-screen overflow-hidden bg-background">
