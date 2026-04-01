@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { Plus, Search, Globe2, Heart, MapPin, Layers } from "lucide-react";
@@ -31,6 +32,8 @@ export function GlobeDashboard({ memories, stats }: GlobeDashboardProps) {
   const [selectedMemories, setSelectedMemories] = useState<Memory[] | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const filteredMemories = memories.filter((m) => {
     if (activeCategory && m.category !== activeCategory) return false;
@@ -56,7 +59,7 @@ export function GlobeDashboard({ memories, stats }: GlobeDashboardProps) {
   return (
     <div className="relative h-[calc(100vh-0px)] md:h-screen overflow-hidden bg-background">
       {/* ── GLOBE (full bleed) ── */}
-      <div className="absolute inset-0">
+      <div className={`absolute inset-0 ${isDark ? "globe-bg-dark" : "globe-bg-light"}`}>
         <GlobeComponent
           memories={filteredMemories}
           onMarkerClick={(mems) => setSelectedMemories(mems)}

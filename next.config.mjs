@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["d3", "d3-array", "d3-scale", "d3-shape", "d3-selection", "d3-transition", "d3-ease", "d3-interpolate", "d3-color", "internmap", "robust-predicates", "delaunator"],
+  transpilePackages: ["d3", "d3-array", "d3-scale", "d3-shape", "d3-selection", "d3-transition", "d3-ease", "d3-interpolate", "d3-color", "internmap", "robust-predicates", "delaunator", "topojson-client"],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
