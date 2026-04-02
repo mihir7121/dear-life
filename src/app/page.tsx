@@ -1,20 +1,11 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
-import { ArrowRight, Globe2, MapPin, Sparkles, Play } from "lucide-react";
+import { ArrowRight, Globe2, MapPin, Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-
-const PREVIEW_IMAGES = [
-  "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&q=80",
-  "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80",
-  "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=600&q=80",
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
-  "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80",
-  "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=600&q=80",
-];
+import { AppPreviewAnimation } from "@/components/landing/AppPreviewAnimation";
 
 const FEATURES = [
   {
@@ -47,14 +38,11 @@ const stagger = {
 
 export default function MarketingPage() {
   const { isSignedIn } = useAuth();
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
     <div className="relative min-h-screen bg-background overflow-x-hidden">
-      {/* Nav */}
+
+      {/* ── Nav ─────────────────────────────────────────────────────────── */}
       <nav className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-4 glass border-b border-border/50">
         <div className="flex items-center gap-2">
           <Globe2 className="w-5 h-5 text-primary" />
@@ -88,167 +76,107 @@ export default function MarketingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-20 overflow-hidden"
-      >
-        {/* Animated background orbs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, hsl(38 78% 52% / 0.12) 0%, transparent 70%)",
-            }}
-            animate={{ scale: [1, 1.2, 1], x: [-20, 20, -20], y: [-10, 10, -10] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, hsl(234 60% 55% / 0.10) 0%, transparent 70%)",
-            }}
-            animate={{ scale: [1.1, 0.9, 1.1], x: [15, -15, 15], y: [10, -10, 10] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          />
-          <motion.div
-            className="absolute top-2/3 left-1/3 w-64 h-64 rounded-full"
-            style={{
-              background:
-                "radial-gradient(circle, hsl(280 60% 55% / 0.08) 0%, transparent 70%)",
-            }}
-            animate={{ scale: [0.9, 1.15, 0.9] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 6 }}
-          />
-        </div>
+      {/* ── Hero split ──────────────────────────────────────────────────── */}
+      <section className="min-h-screen pt-16 flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 py-16 lg:py-0 items-center">
 
-        <motion.div
-          style={{ y: heroY, opacity: heroOpacity }}
-          className="relative z-10 flex flex-col items-center text-center max-w-4xl"
-        >
-          {/* Badge */}
+          {/* Left — copy (below animation on mobile, left on desktop) */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-            className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/8 text-primary text-sm font-medium"
+            initial="hidden"
+            animate="show"
+            variants={stagger.container}
+            className="flex flex-col items-start order-2 lg:order-1"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Your personal memory universe
-          </motion.div>
+            <motion.div
+              variants={stagger.item}
+              className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/8 text-primary text-sm font-medium"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              Your personal memory universe
+            </motion.div>
 
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            className="font-display font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] mb-6"
-          >
-            Everything
-            <br />
-            <span className="text-gradient">you've lived</span>
-            <br />
-            in one place
-          </motion.h1>
+            <motion.h1
+              variants={stagger.item}
+              className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-[0.95] mb-6"
+            >
+              Everything
+              <br />
+              <span className="text-gradient">you've lived</span>
+              <br />
+              in one place
+            </motion.h1>
 
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed"
-          >
-            Concerts. Restaurants. Sunrises. Milestones. The world you've explored, pinned on
-            a living globe and preserved in a beautiful, cinematic scrapbook.
-          </motion.p>
+            <motion.p
+              variants={stagger.item}
+              className="text-lg text-muted-foreground max-w-md mb-10 leading-relaxed"
+            >
+              Concerts. Restaurants. Sunrises. Milestones. Pin them on a living globe.
+              Relive them in a cinematic scrapbook.
+            </motion.p>
 
-          {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 items-center"
-          >
-            {isSignedIn ? (
-              <Link
-                href="/dashboard"
-                className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
-              >
-                Open your Atlas
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            ) : (
-              <>
+            <motion.div
+              variants={stagger.item}
+              className="flex flex-col sm:flex-row gap-4 items-start"
+            >
+              {isSignedIn ? (
                 <Link
-                  href="/sign-up"
+                  href="/dashboard"
                   className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
                 >
-                  Start your Atlas
+                  Open your Atlas
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <Link
-                  href="/sign-in"
-                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-6 py-4 rounded-full border border-border hover:border-foreground/20"
-                >
-                  <Play className="w-4 h-4" />
-                  Sign in to your atlas
-                </Link>
-              </>
-            )}
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-xs text-muted-foreground/50 tracking-widest uppercase">scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-0.5 h-8 bg-gradient-to-b from-muted-foreground/30 to-transparent rounded-full"
-          />
-        </motion.div>
-      </section>
-
-      {/* Preview grid */}
-      <section className="px-6 py-24 max-w-7xl mx-auto">
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger.container}
-          className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4"
-        >
-          {PREVIEW_IMAGES.map((src, i) => (
-            <motion.div
-              key={i}
-              variants={stagger.item}
-              className={`relative overflow-hidden rounded-2xl ${
-                i === 0 ? "col-span-2 md:col-span-1 row-span-2 aspect-[4/5]" :
-                i === 3 ? "col-span-2 aspect-[2/1]" :
-                "aspect-square"
-              }`}
-            >
-              <img
-                src={src}
-                alt=""
-                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              {/* Decorative pin */}
-              <div className="absolute top-3 right-3 w-3 h-3 rounded-full bg-primary shadow-glow-primary animate-ping-slow" />
+              ) : (
+                <>
+                  <Link
+                    href="/sign-up"
+                    className="group flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth hover:shadow-depth-lg hover:-translate-y-0.5"
+                  >
+                    Start your Atlas
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                  <Link
+                    href="/sign-in"
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors px-6 py-4 rounded-full border border-border hover:border-foreground/20 text-sm"
+                  >
+                    Sign in
+                  </Link>
+                </>
+              )}
             </motion.div>
-          ))}
-        </motion.div>
+
+            {/* Social proof / stat strip */}
+            <motion.div
+              variants={stagger.item}
+              className="mt-12 flex items-center gap-6"
+            >
+              {[
+                { value: "100%", label: "Private" },
+                { value: "∞", label: "Memories" },
+                { value: "195", label: "Countries" },
+              ].map(({ value, label }) => (
+                <div key={label} className="text-left">
+                  <p className="font-display font-bold text-2xl text-foreground">{value}</p>
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Right — app preview animation (top on mobile, right on desktop) */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+            className="flex items-center justify-center lg:justify-end order-1 lg:order-2"
+          >
+            <AppPreviewAnimation />
+          </motion.div>
+
+        </div>
       </section>
 
-      {/* Features */}
+      {/* ── Features ────────────────────────────────────────────────────── */}
       <section className="px-6 py-24 max-w-5xl mx-auto">
         <motion.div
           initial="hidden"
@@ -276,7 +204,7 @@ export default function MarketingPage() {
         </motion.div>
       </section>
 
-      {/* Bottom CTA */}
+      {/* ── Bottom CTA ──────────────────────────────────────────────────── */}
       <section className="px-6 py-24 text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -298,22 +226,20 @@ export default function MarketingPage() {
               href="/dashboard"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth"
             >
-              Back to my Atlas
-              <ArrowRight className="w-4 h-4" />
+              Back to my Atlas <ArrowRight className="w-4 h-4" />
             </Link>
           ) : (
             <Link
               href="/sign-up"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-full text-base font-semibold hover:opacity-90 transition-all shadow-depth"
             >
-              Create your Atlas
-              <ArrowRight className="w-4 h-4" />
+              Create your Atlas <ArrowRight className="w-4 h-4" />
             </Link>
           )}
         </motion.div>
       </section>
 
-      {/* Footer */}
+      {/* ── Footer ──────────────────────────────────────────────────────── */}
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground">
         <div className="flex items-center justify-center gap-2">
           <Globe2 className="w-4 h-4 text-primary" />
@@ -321,6 +247,7 @@ export default function MarketingPage() {
         </div>
         <p className="mt-2 text-xs">Your memories. Your world.</p>
       </footer>
+
     </div>
   );
 }
