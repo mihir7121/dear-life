@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { ArrowRight, Globe2, MapPin, Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { AppPreviewAnimation } from "@/components/landing/AppPreviewAnimation";
@@ -38,6 +40,11 @@ const stagger = {
 
 export default function MarketingPage() {
   const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) router.replace("/dashboard");
+  }, [isSignedIn, router]);
 
   return (
     <div className="relative min-h-screen bg-background overflow-x-hidden">
