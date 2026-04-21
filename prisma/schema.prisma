@@ -34,7 +34,7 @@ model Memory {
   // Core fields
   title        String
   description  String?     @db.Text
-  category     String      // concert | restaurant | cafe | travel | landmark | moment | milestone | nature | art | sports | other
+  category     String      @default("other") // concert | restaurant | cafe | travel | landmark | moment | milestone | nature | art | sports | other
   date         DateTime
   endDate      DateTime?
 
